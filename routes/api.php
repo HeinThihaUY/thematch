@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('player', 'PlayerController@getPlayer');
+Route::get('player', 'PlayerController@getPlayer');
 
 Route::get('team', 'TeamController@getTeamProfile');
 
@@ -30,3 +30,9 @@ Route::get('team/challenge/request', 'ChallengeController@getChallengeRequest');
 Route::get('challenge/team', 'TeamController@getChallengeTeam');
 
 Route::get('places', 'PlaceController@getPlaces');
+
+Route::get('player/others', 'PlayerController@getAllOtherPlayers');
+
+Route::get('player/recurite', 'PlayerController@getPlayersForRecurite');
+
+Route::get('team/players', 'PlayerController@getTeamPlayers');
