@@ -7,6 +7,23 @@ use Illuminate\Http\Request;
 
 class ChallengeController extends Controller
 {
+
+  public function createChallenge(Request $request)
+  {
+      $challenge = $request->json()->all();
+      $createdTeam = Challenge::create([
+          'challenger_team_id' => $challenge['team1'],
+          'accepted_team_id' => $challenge['team2'],
+          'place_id' => $challenge['place_id'],
+          'reserved_time' => $challenge['date'],
+          'status' => 1,
+          'point' => 50,
+          'created_at' => date('Y-m-d H:i:s'),
+          'updated_at' => date('Y-m-d H:i:s'),
+      ]);
+      return response()->json(['success' => 'send challenge request']);
+  }
+
   public function getChallengeRequest(Request $request)
   {
       $id = $request->teamId;
@@ -24,15 +41,22 @@ class ChallengeController extends Controller
 
   public function getChanllengeRequestPending(Request $request)
   {
-    $id = $request->teamId;
-    $c_team = Challenge::where('challenger_team_id', $id)->where('status',1)->get();
-    return response()->json($this->getTeam($c_team));
+      $id = $request->teamId;
+      $c_team = Challenge::where('challenger_team_id', $id)->where('status',1)->get();
+      return response()->json($this->getTeam($c_team));
   }
 
   public function getChanllengeRequestAccepted(Request $request)
   {
       $id = $request->teamId;
       $c_team = Challenge::where('challenger_team_id', $id)->where('status', 2)->get();
+      return response()->json($this->getTeam($c_team));
+  }
+
+  public function getChanllengeRequestFinished(Request $request)
+  {
+      $id = $request->teamId;
+      $c_team = Challenge::where('challenger_team_id', $id)->where('status', 3)->get();
       return response()->json($this->getTeam($c_team));
   }
 

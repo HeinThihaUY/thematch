@@ -18,11 +18,12 @@ Route::get('team/challenge/history', 'ChallengeController@getChanllengeRequestFi
 Route::get('team/challenge/request', 'ChallengeController@getChallengeRequest');
 
 Route::get('challenge/team', 'TeamController@getChallengeTeam');
+Route::post('challenge/send', 'ChallengeController@createChallenge');
 
 Route::get('places', 'PlaceController@getPlaces');
 
 Route::get('player/others', 'PlayerController@getAllOtherPlayers');
-
+Route::get('player/team', 'PlayerController@getPlayerTeams');
 Route::get('player/recurite', 'PlayerController@getPlayersForRecurite');
 
 Route::get('team/players', 'PlayerController@getTeamPlayers');
