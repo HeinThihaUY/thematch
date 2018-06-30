@@ -14,13 +14,27 @@ class TeamController extends Controller
         return response()->json($teams);
     }
 
-
     public function getTeamProfile(Request $request)
     {
-      $team
+        if($request->teamId == null) {
+          return response()->json(['error' => 'need teamId']);
+        }
+
+        $cTeam = Team::where('id', $request->teamId)->first();
+        return response()->json($cTeam);
     }
 
-    private function getTeamObj() {
+    public function getChallengeTeam(Request $request)
+    {
+        if($request->teamId == null) {
+          return response()->json(['error' => 'need teamId']);
+        }
 
+        $cTeam = Team::where('id', $request->teamId)->first();
+        $cPoint = $cTeam->point;
+
+        $teams = Team::where('matching_status', 1)->whereBetween('point', [$cPoint-300, $cPoint+300])->get();
+        return response()->json($teams);
     }
+
 }

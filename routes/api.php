@@ -19,4 +19,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('player', 'PlayerController@getPlayer');
 
+Route::get('team', 'TeamController@getTeamProfile');
+
+Route::get('team/challenge', 'ChallengeController@getChallengedTeam');
+Route::get('team/challenge/pending', 'ChallengeController@getChanllengeRequestPending');
+Route::get('team/challenge/accept', 'ChallengeController@getChanllengeRequestAccepted');
+Route::get('team/challenge/history', 'ChallengeController@getChanllengeRequestFinished');
+Route::get('team/challenge/request', 'ChallengeController@getChallengeRequest');
+
+Route::get('challenge/team', 'TeamController@getChallengeTeam');
+
 Route::get('places', 'PlaceController@getPlaces');
