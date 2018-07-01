@@ -23,7 +23,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Exception $e)
     {
-      return parent::render($request, $e);
+      // return parent::render($request, $e);
         if ($this->isHttpException($e)) {
         switch ($e->getStatusCode()) {
             // not authorized
@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
                 break;
             // not found
             case '404':
-                return response()->json(['error' => 'Not Found'], 404);
+                return response()->json(['error' => 'Endpoint Not Found'], 404);
                 break;
             // internal error
             case '500':

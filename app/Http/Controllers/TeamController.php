@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Team;
+use App\Models\Team_detail;
 use App\Models\Player_Invitation;
 use App\Http\Controllers\Controller;
 use DB;
@@ -20,6 +21,12 @@ class TeamController extends Controller
             'team_status' => 2,
             'matching_status' => 3,
             'point' => 0,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        Team_detail::create([
+            'team_id' => $createdTeam->id,
+            'player_id' => $team['leader'],
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
