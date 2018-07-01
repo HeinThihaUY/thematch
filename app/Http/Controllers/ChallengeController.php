@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Challenge;
 use App\Models\Team;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use DB;
 
@@ -76,10 +77,12 @@ class ChallengeController extends Controller
       $c->id = $challenge->id;
       $c->challenger_team_id = $challenge->challenger_team_id;
       $c->challenger_team_name = Team::where('id',$challenge->challenger_team_id)->get()->first()->name;
+      $c->challenger_team_logo = Team::where('id',$challenge->challenger_team_id)->get()->first()->logo_url;
       $c->accepted_team_id = $challenge->accepted_team_id;
       $c->accepted_team_name = Team::where('id',$challenge->accepted_team_id)->get()->first()->name;
+      $c->accepted_team_logo = Team::where('id',$challenge->accepted_team_id)->get()->first()->logo_url;
       $c->status = $challenge->status;
-      $c->place_id = $challenge->place_id;
+      $c->place = Place::where('id',$challenge->place_id)->get()->first()->name;
       $c->reserved_time = $challenge->reserved_time;
       return $c;
   }
@@ -93,10 +96,8 @@ class ChallengeController extends Controller
   }
 
   public function acceptInvitedChallenge(){
-    $challenger_team_id = request('challengerTeamId');
-    $accepted_team_id = request('acceptedTeamId');
-    $result = Challenge::where('challenger_team_id', $challenger_team_id)
-          ->where('accepted_team_id', $accepted_team_id)
+    $challenge_id = request('challengeId');
+    $result = Challenge::where('id', $challenge_id)
           ->update(['status' => 2]);
     if($result){
       return response()->json(['success'=> 'updated']);
@@ -106,10 +107,8 @@ class ChallengeController extends Controller
   }
 
   public function declineInvitedChallenge(){
-    $challenger_team_id = request('challengerTeamId');
-    $accepted_team_id = request('acceptedTeamId');
-    $result = Challenge::where('challenger_team_id', $challenger_team_id)
-          ->where('accepted_team_id', $accepted_team_id)
+    $challenge_id = request('challengeId');
+    $result = Challenge::where('id', $challenge_id)
           ->delete();
     if($result){
       return response()->json(['success'=> 'deleted']);

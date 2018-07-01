@@ -26,6 +26,7 @@ Route::get('team/invite/decline', 'ChallengeController@declineInvitedChallenge')
 Route::get('team/invite/accept', 'ChallengeController@acceptInvitedChallenge');
 
 Route::get('places', 'PlaceController@getPlaces');
+Route::get('time/check', 'BookingController@checkAvailableTime');
 
 Route::get('player/invite', 'PlayerController@getInvitationTeams');
 Route::get('player/invite/accept', 'PlayerController@acceptTeam');

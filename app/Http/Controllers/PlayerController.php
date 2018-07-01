@@ -63,7 +63,7 @@ class PlayerController extends Controller
 
 	  private function getTeamObj($team, $pid)
 	  {
-				$_t = Team::where('id',$team->team_id)->get()->first();
+			$_t = Team::where('id',$team->team_id)->get()->first();
 	      $t = new \stdClass();
 	      $t->id = $team->team_id;
 	      $t->name = $_t->name;
