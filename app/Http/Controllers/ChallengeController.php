@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Challenge;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use DB;
 
 class ChallengeController extends Controller
 {
@@ -81,6 +82,40 @@ class ChallengeController extends Controller
       $c->place_id = $challenge->place_id;
       $c->reserved_time = $challenge->reserved_time;
       return $c;
+  }
+
+  public function getInvitedChallenges(){
+      $team_id = request('teamId');
+      $challenged_teams = DB::table('challenges')->select("teams.*")
+        ->leftJoin('teams', 'challenges.challenger_team_id', '=', 'teams.id')
+        ->where('challenges.accepted_team_id', $team_id)->get();
+        return $challenged_teams;
+  }
+
+  public function acceptInvitedChallenge(){
+    $challenger_team_id = request('challengerTeamId');
+    $accepted_team_id = request('acceptedTeamId');
+    $result = Challenge::where('challenger_team_id', $challenger_team_id)
+          ->where('accepted_team_id', $accepted_team_id)
+          ->update(['status' => 2]);
+    if($result){
+      return response()->json(['success'=> 'updated']);
+    }else{
+      return response()->json(['fail'=> 'there is error in update']);
+    }
+  }
+
+  public function declineInvitedChallenge(){
+    $challenger_team_id = request('challengerTeamId');
+    $accepted_team_id = request('acceptedTeamId');
+    $result = Challenge::where('challenger_team_id', $challenger_team_id)
+          ->where('accepted_team_id', $accepted_team_id)
+          ->delete();
+    if($result){
+      return response()->json(['success'=> 'deleted']);
+    }else{
+      return response()->json(['fail'=> 'there is error in delete']);
+    }
   }
 
 }

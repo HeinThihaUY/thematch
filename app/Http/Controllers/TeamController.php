@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Team;
 use App\Models\Player_Invitation;
 use App\Http\Controllers\Controller;
+use DB;
 
 class TeamController extends Controller
 {
@@ -32,6 +33,20 @@ class TeamController extends Controller
         return response()->json(['success'=> 'team created', 'teamId' => $createdTeam->id]);
     }
 
+    public function recruitTeam(Request $request){
+        $team = $request->json()->all();
+        $team_id = $team['teamId'];
+        $players = $team['players'];
+        foreach($players as $player){
+          Player_Invitation::create([
+            'team_id' => $team_id,
+            'player_id' => $player
+          ]);
+        }
+
+        return response()->json(['success'=> 'member recruited', 'teamId' => $team_id]);
+    }
+
     public function getAllTeam()
     {
         $teams = Team::all();
@@ -45,7 +60,28 @@ class TeamController extends Controller
         }
 
         $cTeam = Team::where('id', $request->teamId)->first();
-        return response()->json($cTeam);
+
+
+        $team_members = DB::table('team_details')
+                            ->selectRaw('players.*')
+                            ->leftJoin('players', 'team_details.player_id', '=', 'players.id')
+                            ->where('team_details.team_id', $cTeam->id)->get();
+
+            $arr = [];
+            foreach ($team_members as $member) {
+                $arr[] = $member;
+            }
+
+        $team_profile['id'] = $cTeam->id;
+        $team_profile['name'] = $cTeam->name;
+        $team_profile['logo_url'] = $cTeam->logo_url;
+        $team_profile['matching_status'] = $cTeam->matching_status;
+        $team_profile['team_status'] = $cTeam->team_status;
+        $team_profile['leader'] = $cTeam->leader;
+        $team_profile['point'] = $cTeam->point;
+        $team_profile['players'] = $team_members;
+
+        return $team_profile;
     }
 
     public function getChallengeTeam(Request $request)
@@ -53,11 +89,11 @@ class TeamController extends Controller
         if($request->teamId == null) {
           return response()->json(['error' => 'need teamId']);
         }
-
+        $id = $request->teamId;
         $cTeam = Team::where('id', $request->teamId)->first();
         $cPoint = $cTeam->point;
 
-        $teams = Team::where('matching_status', 1)->whereBetween('point', [$cPoint-300, $cPoint+300])->get();
+        $teams = Team::where('matching_status', 1)->whereNotIn('id', [$id])->whereBetween('point', [$cPoint-300, $cPoint+300])->get();
         return response()->json($teams);
     }
 

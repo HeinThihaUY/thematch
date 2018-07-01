@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\Team_detail;
+use App\Models\Player_Invitation;
 use DB;
 
 class PlayerController extends Controller
@@ -71,4 +72,35 @@ class PlayerController extends Controller
 	      $t->logo_url = $_t->logo_url;
 	      return $t;
 	  }
+
+   public function acceptTeam(){
+      $team_id = request('teamId');
+      $player_id = request('playerId');
+      // dd($player_id);
+      Team_detail::create([
+         "team_id" => $team_id,
+         "player_id" => $player_id
+      ]);
+
+      Player_Invitation::where('team_id', $team_id)->where('player_id', $player_id)->delete();
+
+      return response()->json(['success'=> 'team member added, invitation deleted']);
+   }
+
+   public function declineTeam(){
+      $team_id = request('teamId');
+      $player_id = request('playerId');
+      Player_Invitation::where('team_id', $team_id)->where('player_id', $player_id)->delete();
+
+      return response()->json(['success'=> 'invitation deleted']);
+   }
+
+   public function getInvitationTeams()
+   {
+      $player_id = request('playerId');
+      $invitedTeams = DB::table('player_invitations')->selectRaw('teams.*')
+         ->leftJoin('teams', 'player_invitations.team_id', '=', 'teams.id')
+         ->where('player_invitations.player_id', $player_id)->get();
+      return $invitedTeams;
+   }
 }
